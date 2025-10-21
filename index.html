@@ -356,6 +356,11 @@
         <div id="welcomeScreen" class="screen active">
             <h1>👋 Greeting Practice</h1>
             <p>This tool helps you practice the timing of street greetings. Select how far away someone is, and audio prompts will guide you through the encounter.</p>
+            <p style="font-size: 0.9em; color: var(--muted-foreground); margin-top: 20px;">
+                <strong>Best used with:</strong><br>
+                🎧 Headphones<br>
+                🚶 While walking (anywhere you might encounter someone walking toward you)
+            </p>
             <button class="btn" onclick="startExperience()">Start Practice</button>
         </div>
 
@@ -384,103 +389,25 @@
             </div>
         </div>
 
-        <!-- Survey Screen -->
-        <div id="surveyScreen" class="screen">
-            <h1>How Did It Go?</h1>
-            <p>Help us understand your experience</p>
-            <form class="survey-form" id="surveyForm" onsubmit="submitSurvey(event)">
-                <input type="hidden" id="distance" name="distance">
-                <input type="hidden" id="timestamp" name="timestamp">
-                
-                <div class="form-group">
-                    <label>Did you greet them?</label>
-                    <div class="radio-group">
-                        <label><input type="radio" name="you_greeted" value="yes" required> Yes</label>
-                        <label><input type="radio" name="you_greeted" value="no"> No</label>
-                        <label><input type="radio" name="you_greeted" value="sort-of"> Sort of</label>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Did they greet you back?</label>
-                    <div class="radio-group">
-                        <label><input type="radio" name="they_greeted" value="yes" required> Yes</label>
-                        <label><input type="radio" name="they_greeted" value="no"> No</label>
-                        <label><input type="radio" name="they_greeted" value="sort-of"> Sort of</label>
-                        <label><input type="radio" name="they_greeted" value="na"> Didn't greet</label>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>How did the encounter feel?</label>
-                    <div class="emoji-scale">
-                        <label class="emoji-option">
-                            <input type="radio" name="feeling" value="1" required>
-                            <span class="emoji">😰</span>
-                            <span class="label">Very awkward</span>
-                        </label>
-                        <label class="emoji-option">
-                            <input type="radio" name="feeling" value="2">
-                            <span class="emoji">😐</span>
-                            <span class="label">Awkward</span>
-                        </label>
-                        <label class="emoji-option">
-                            <input type="radio" name="feeling" value="3">
-                            <span class="emoji">🙂</span>
-                            <span class="label">Neutral</span>
-                        </label>
-                        <label class="emoji-option">
-                            <input type="radio" name="feeling" value="4">
-                            <span class="emoji">😊</span>
-                            <span class="label">Natural</span>
-                        </label>
-                        <label class="emoji-option">
-                            <input type="radio" name="feeling" value="5">
-                            <span class="emoji">🌟</span>
-                            <span class="label">Very natural</span>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Was the audio timing helpful?</label>
-                    <div class="radio-group">
-                        <label><input type="radio" name="timing_helpful" value="yes" required> Yes</label>
-                        <label><input type="radio" name="timing_helpful" value="no"> No</label>
-                        <label><input type="radio" name="timing_helpful" value="somewhat"> Somewhat</label>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Would you use this again?</label>
-                    <div class="radio-group">
-                        <label><input type="radio" name="use_again" value="yes" required> Yes</label>
-                        <label><input type="radio" name="use_again" value="no"> No</label>
-                        <label><input type="radio" name="use_again" value="maybe"> Maybe</label>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>What happened? (Optional)</label>
-                    <textarea name="description" placeholder="Describe the encounter..."></textarea>
-                </div>
-
-                <button type="submit" class="btn">Submit Feedback</button>
-                <div id="submitStatus" style="text-align: center; margin-top: 15px; color: var(--muted-foreground);"></div>
-            </form>
+        <!-- Encouragement Screen -->
+        <div id="encouragementScreen" class="screen">
+            <h1>Keep Going! 🌟</h1>
+            <p style="font-size: 1.1em; line-height: 1.8; margin: 30px 0;">
+                It's in the small interactions—a smile, a nod, a simple "hi"—that we build a more connected world.
+            </p>
+            <p style="color: var(--muted-foreground); margin-bottom: 30px;">
+                Every greeting is practice. Every moment of courage counts.
+            </p>
+            <button class="btn" onclick="showScreen('welcomeScreen'); resetApp()">Practice Again</button>
         </div>
     </div>
 
     <script>
-        // ===== GOOGLE SHEETS CONFIGURATION =====
-        // REPLACE THIS WITH YOUR GOOGLE APPS SCRIPT WEB APP URL
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxMX5_M5027Ervg562z8kMkiWnjpKYuClaAm7wKCWkjX57nHyU7Zlm-T_SQr8jr_M2_TA/exec';
-        
         // Audio files configuration - REPLACE THESE URLs WITH YOUR OWN
         const audioFiles = {
-            1: 'audio/close.MP3',   // Close distance (5-15 feet)
-            2: 'audio/medium.MP3',  // Medium distance (15-30 feet)
-            3: 'audio/far.MP3'      // Far distance (30+ feet)
+            1: 'audio/close.mp3',   // Close distance (5-15 feet)
+            2: 'audio/medium.mp3',  // Medium distance (15-30 feet)
+            3: 'audio/far.mp3'      // Far distance (30+ feet)
         };
 
         const sliderOptions = [
@@ -598,7 +525,7 @@
                 // Wait for audio to finish or wait a bit longer
                 const remainingTime = (currentAudio.duration - currentAudio.currentTime) * 1000;
                 setTimeout(() => {
-                    showScreen('surveyScreen');
+                    showScreen('encouragementScreen');
                 }, Math.max(remainingTime, 1500));
             }, { once: true });
             
@@ -610,7 +537,7 @@
                     loadingIndicator.style.display = 'none';
                     await typeText(experience.text, textDisplay);
                     setTimeout(() => {
-                        showScreen('surveyScreen');
+                        showScreen('encouragementScreen');
                     }, 2000);
                 }, 2000);
             });
@@ -619,86 +546,20 @@
             currentAudio.load();
         }
 
-        async function submitSurvey(event) {
-            event.preventDefault();
-            
-            const form = event.target;
-            const submitButton = form.querySelector('button[type="submit"]');
-            const statusDiv = document.getElementById('submitStatus');
-            
-            // Disable submit button
-            submitButton.disabled = true;
-            submitButton.textContent = 'Submitting...';
-            statusDiv.textContent = 'Sending your feedback...';
-            
-            // Collect form data
-            const formData = new FormData(form);
-            
-            // Add hidden fields
-            formData.set('distance', sliderOptions[selectedDistance - 1]);
-            formData.set('timestamp', new Date().toISOString());
-            
-            // Convert to object for Google Sheets
-            const data = {};
-            formData.forEach((value, key) => {
-                data[key] = value;
-            });
-            
-            try {
-                // Send to Google Sheets
-                const response = await fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(data)
-                });
-                
-                // With no-cors mode, we can't read the response, so just assume success
-                statusDiv.textContent = 'Thank you! Your feedback has been recorded.';
-                statusDiv.style.color = 'green';
-                
-                // Stop any playing audio
-                if (currentAudio) {
-                    currentAudio.pause();
-                    currentAudio.currentTime = 0;
-                }
-                
-                // Wait a moment, then reset
-                setTimeout(() => {
-                    // Reset form
-                    form.reset();
-                    
-                    // Reset UI
-                    submitButton.disabled = false;
-                    submitButton.textContent = 'Submit Feedback';
-                    statusDiv.textContent = '';
-                    
-                    // Reset slider
-                    document.getElementById('morphButton').classList.remove('morphing');
-                    document.getElementById('morphButton').textContent = 'I See Someone';
-                    document.getElementById('morphButton').style.pointerEvents = 'auto';
-                    document.getElementById('sliderContainer').classList.remove('active');
-                    document.getElementById('audioSlider').value = 1;
-                    document.getElementById('sliderLabel').textContent = 'Close (5-15 feet)';
-                    
-                    // Return to welcome screen
-                    showScreen('welcomeScreen');
-                }, 2000);
-                
-            } catch (error) {
-                console.error('Error submitting form:', error);
-                statusDiv.textContent = 'Error submitting. Your data has been logged locally.';
-                statusDiv.style.color = 'red';
-                
-                // Log to console as backup
-                console.log('Survey Data:', data);
-                
-                // Re-enable button
-                submitButton.disabled = false;
-                submitButton.textContent = 'Submit Feedback';
+        function resetApp() {
+            // Stop any playing audio
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
             }
+            
+            // Reset slider
+            document.getElementById('morphButton').classList.remove('morphing');
+            document.getElementById('morphButton').textContent = 'I See Someone';
+            document.getElementById('morphButton').style.pointerEvents = 'auto';
+            document.getElementById('sliderContainer').classList.remove('active');
+            document.getElementById('audioSlider').value = 1;
+            document.getElementById('sliderLabel').textContent = 'Close (5-15 feet)';
         }
     </script>
 </body>
